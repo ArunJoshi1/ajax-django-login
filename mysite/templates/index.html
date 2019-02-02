@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+  <div class="register-login">
+     <div style="margin: 0 40%">
+      <form method="post">
+         {{form.as_p}}
+         {% csrf_token %}
+         <button  id="btn">Login</button>
+     </form>
+     </div>
+     <div style="margin: 0 40%">
+       <h1 class="result"></h1>
+     </div>
+ </div>
+ <script type="text/javascript">
+   $("#btn").click(function(event) {
+     /* Act on the event */
+     username=$('#id_username').val();
+     password1=$('#id_password1').val();
+     password2=$('#id_password2').val();
+    console.log(password1);
+    if(password1 == password2)
+    {
+      console.log('hit');
+      $.ajax({
+        url: '{% url "process" %}',
+        type: 'POST',
+        dataType: 'json',
+        data: {username:username,password:password1,csrfmiddlewaretoken:'{{csrf_token}}'}
+      })
+      .done(function(data) {
+        $('.result').text(data).fadeIn();
+            $('.result').fadeOut(2000);
+      })
+      .fail(function(e) {
+          $('.result').text('internal error');
+          $('.result').fadeOut(2000);
+      })
+    }
+    else {
+      $('.result').text("password not match").fadeIn();
+      $('.result').fadeOut(2000);
+    }
+       event.preventDefault();
+   });
+
+ </script>
+</body>
+
+</html>
